@@ -1,6 +1,11 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include"Shaders.h"
+#include"Circles.h"
+
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -45,12 +50,18 @@ int main() {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     
+    Shader shader("Shape.vert", "Shape.frag");
+
+    Circle circle(glm::vec2(0.0f, 0.0f), 0.5f, 50, glm::vec4(0.2f, 0.5f, 1.0f, 1.0f));
+    
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
 
         
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        circle.draw(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
