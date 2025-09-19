@@ -60,7 +60,7 @@ void Circle::setupMesh() {
 
 void Circle::draw(Shader& shader) {
 
-	shader.use();
+	//shader.use();
 
 	shader.setVec4("uColor", m_Color);
 	glBindVertexArray(m_VAO);

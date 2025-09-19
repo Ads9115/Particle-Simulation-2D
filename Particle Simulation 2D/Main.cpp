@@ -1,14 +1,20 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp> 
 #include"Shaders.h"
 #include"Circles.h"
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
+glm::mat4 projection;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
+    float aspectRatio = (float)width / (float)height;
+    projection = glm::ortho(-aspectRatio, aspectRatio, -1.0f, 1.0f, -1.0f, 1.0f);
 }
 
 void processInput(GLFWwindow* window) {
@@ -30,7 +36,7 @@ int main() {
 
 
     
-    GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Window", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "OpenGL Window", nullptr, nullptr);
     if (!window) {
         std::cerr << "Failed to create GLFW window\n";
         glfwTerminate();
@@ -48,6 +54,7 @@ int main() {
 
     glViewport(0, 0, 800, 600);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    framebuffer_size_callback(window, SCR_WIDTH, SCR_HEIGHT);
 
     
     Shader shader("Shape.vert", "Shape.frag");
@@ -61,6 +68,8 @@ int main() {
         glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        shader.use();
+        shader.setMat4("projection", projection);
         circle.draw(shader);
 
         glfwSwapBuffers(window);
