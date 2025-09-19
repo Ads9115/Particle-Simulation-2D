@@ -5,6 +5,9 @@
 #include <glm/gtc/matrix_transform.hpp> 
 #include"Shaders.h"
 #include"Circles.h"
+#include<ctime>
+#include"ParticleSystem.h"
+
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -52,6 +55,19 @@ int main() {
         return -1;
     }
 
+    glEnable(GL_PROGRAM_POINT_SIZE);
+    srand(static_cast<unsigned int>(time(0)));
+
+    
+    ParticleSystem particleSystem(10000); 
+
+    
+    ParticleProps particleProps;
+    particleProps.Position = { 0.0f, -0.9f }; 
+    particleProps.Velocity = { 0.0f, 1.5f };      
+    particleProps.velocityVariation = { 1.0f, 0.75f };   
+    particleProps.colorStart = { 1.0f, 0.5f, 0.2f, 1.0f }; 
+    particleProps.LifeTime = 1.5f;
     glViewport(0, 0, 800, 600);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     framebuffer_size_callback(window, SCR_WIDTH, SCR_HEIGHT);
@@ -60,17 +76,27 @@ int main() {
     Shader shader("Shape.vert", "Shape.frag");
 
     Circle circle(glm::vec2(0.0f, 0.0f), 0.5f, 50, glm::vec4(0.2f, 0.5f, 1.0f, 1.0f));
+
+    float lastFrameTime = 0.0f;
     
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
 
+        float currentTime = (float)glfwGetTime();
+        float dt = currentTime - lastFrameTime;
+        lastFrameTime = currentTime;
+
+        std::cout << "Delta Time (dt): " << dt << std::endl;
+
+
         
-        glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        shader.use();
-        shader.setMat4("projection", projection);
-        circle.draw(shader);
+        particleSystem.Emit(particleProps);
+        particleSystem.update(dt);
+        particleSystem.Draw(projection);
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();
