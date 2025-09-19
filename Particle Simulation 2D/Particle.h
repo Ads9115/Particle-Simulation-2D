@@ -7,6 +7,7 @@ struct Particle {
 	glm::vec2 Velocity;
 	glm::vec4 Color;
 	float LifeRemaining = 0.0f;
+	float LifeTime = 0.0f;
 
 	bool IsActive() const { return LifeRemaining > 0.0f; }
 

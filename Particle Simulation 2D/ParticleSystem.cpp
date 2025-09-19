@@ -35,6 +35,8 @@ void ParticleSystem::update(float dt) {
 
     static bool s_DebugParticleFound = false;
 
+    const float gravity = -2.0f;
+
     for (auto& particle : m_ParticlePool) {
 
         if (!particle.IsActive())
@@ -59,6 +61,10 @@ void ParticleSystem::update(float dt) {
             continue;
         }
 
+        float life = particle.LifeRemaining / particle.LifeTime;
+        
+        particle.Color.a = life;
+        particle.Velocity.y += gravity * dt;
         particle.Position += particle.Velocity * dt;
 
 
@@ -96,6 +102,7 @@ void ParticleSystem::Emit(const ParticleProps& particleProps) {
 
     particle.Position = particleProps.Position;
     particle.LifeRemaining = particleProps.LifeTime;
+    particle.LifeTime = particleProps.LifeTime;
 
     particle.Velocity = particleProps.Velocity;
     particle.Velocity.x += particleProps.velocityVariation.x * RandomFloat(-0.5f, 0.5f);
