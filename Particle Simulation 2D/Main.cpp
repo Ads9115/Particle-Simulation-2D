@@ -78,6 +78,8 @@ int main() {
     Circle circle(glm::vec2(0.0f, 0.0f), 0.5f, 50, glm::vec4(0.2f, 0.5f, 1.0f, 1.0f));
 
     float lastFrameTime = 0.0f;
+
+    double mouseX, mouseY;
     
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
@@ -85,6 +87,15 @@ int main() {
         float currentTime = (float)glfwGetTime();
         float dt = currentTime - lastFrameTime;
         lastFrameTime = currentTime;
+
+        glfwGetCursorPos(window, &mouseX, &mouseY);
+
+        
+        float ndcX = (float)(mouseX / SCR_WIDTH) * 2.0f - 1.0f;
+        float ndcY = 1.0f - (float)(mouseY / SCR_HEIGHT) * 2.0f;
+
+        particleProps.Position = { ndcX, ndcY };
+
 
         std::cout << "Delta Time (dt): " << dt << std::endl;
 
